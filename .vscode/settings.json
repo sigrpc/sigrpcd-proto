@@ -1,0 +1,16 @@
+{
+    "gopls": {},
+    "go.alternateTools": {},
+    "go.formatTool": "gofmt",
+    "go.lintTool": "staticcheck",
+    "go.lintFlags": [
+        "-checks",
+        "all,-ST1000,-ST1020,-ST1021,-ST1022,-ST1023,-SA5007"
+    ],
+    "go.lintOnSave": "package",
+    "[go]": {
+        "editor.insertSpaces": false,
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+    }
+}
