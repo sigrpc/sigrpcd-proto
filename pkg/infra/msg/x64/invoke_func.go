@@ -47,9 +47,10 @@ func NewInvokeFuncCodec(
 }
 
 func (h *InvokeFuncCodec) Encode(invokeFunc *msg.InvokeFuncMsg) []byte {
-	byteInvokeFuncID := make([]byte, unsafe.Sizeof(invokeFunc.X64.InvokefuncId))
-	binary.LittleEndian.PutUint64(byteInvokeFuncID, invokeFunc.X64.InvokefuncId)
-	bytePayload := byteInvokeFuncID
+	byteID := make([]byte, unsafe.Sizeof(invokeFunc.X64.InvokefuncId)<<1)
+	binary.LittleEndian.PutUint64(byteID, invokeFunc.X64.InvokefuncId)
+	binary.LittleEndian.PutUint64(byteID[unsafe.Sizeof(invokeFunc.X64.InvokefuncId):], invokeFunc.X64.RespId)
+	bytePayload := byteID
 	x64CPU := cpu.CPU{
 		X64: invokeFunc.X64.Ctx.Cpu,
 	}
@@ -83,11 +84,16 @@ func (h *InvokeFuncCodec) Decode(reader io.Reader, header *msg.RPCHeader) (*msg.
 		X64: &x64.InvokeFuncMsg{
 			Header:       header.X64,
 			InvokefuncId: 0,
+			RespId:       0,
 			Ctx:          &x64.UserContext{},
 			Page:         nil,
 		},
 	}
 	err := binary.Read(reader, binary.LittleEndian, &invokeFunc.X64.InvokefuncId)
+	if err != nil {
+		return nil, err
+	}
+	err = binary.Read(reader, binary.LittleEndian, &invokeFunc.X64.RespId)
 	if err != nil {
 		return nil, err
 	}

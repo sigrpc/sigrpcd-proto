@@ -43,7 +43,7 @@ func run(sock net.Listener, cc *grpc.ClientConn) {
 			continue
 		}
 		go func() {
-			ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer conn.Close()
 			defer cancel()
 			grpcClient := grpcclient.NewClient(cc, ctx)
